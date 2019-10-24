@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="最近一直都在苦学 Android, 不得不说都是我啃了一遍 Java 基础之后现在反过头来看 Android 感觉能自己解决一些错误了,至少我明白错在哪里了.这是一件好事. 今天主要记录一下自己对 Android 生命周期管理的看法. 我相信网上写生命周期的一定很多人, 毕竟是Android 开发很重要的理念. 还是上图, Google 官方对生命周期的解释.">
+<meta name="keywords" content="Android,live,生命周期">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android生命周期的理解方式">
+<meta property="og:url" content="https:&#x2F;&#x2F;y85.pw&#x2F;2017&#x2F;06&#x2F;23&#x2F;Android-alive-function&#x2F;index.html">
+<meta property="og:site_name" content="没门的城">
+<meta property="og:description" content="最近一直都在苦学 Android, 不得不说都是我啃了一遍 Java 基础之后现在反过头来看 Android 感觉能自己解决一些错误了,至少我明白错在哪里了.这是一件好事. 今天主要记录一下自己对 Android 生命周期管理的看法. 我相信网上写生命周期的一定很多人, 毕竟是Android 开发很重要的理念. 还是上图, Google 官方对生命周期的解释.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https:&#x2F;&#x2F;developer.android.com&#x2F;images&#x2F;activity_lifecycle.png">
+<meta property="og:updated_time" content="2019-10-24T06:32:57.083Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;developer.android.com&#x2F;images&#x2F;activity_lifecycle.png">
+  <link rel="canonical" href="https://y85.pw/2017/06/23/Android-alive-function/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Android生命周期的理解方式 | 没门的城</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">没门的城</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      
+    
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://y85.pw/2017/06/23/Android-alive-function/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Millyn">
+      <meta itemprop="description" content="Product / Code / PHP / Python / Docker">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="没门的城">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            Android生命周期的理解方式
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2017-06-23 00:15:47" itemprop="dateCreated datePublished" datetime="2017-06-23T00:15:47+08:00">2017-06-23</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-10-24 14:32:57" itemprop="dateModified" datetime="2019-10-24T14:32:57+08:00">2019-10-24</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/06/23/Android-alive-function/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/06/23/Android-alive-function/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近一直都在苦学 Android, 不得不说都是我啃了一遍 Java 基础之后现在反过头来看 Android 感觉能自己解决一些错误了,至少我明白错在哪里了.这是一件好事.</p>
+<p>今天主要记录一下自己对 Android 生命周期管理的看法.</p>
+<p>我相信网上写生命周期的一定很多人, 毕竟是Android 开发很重要的理念.</p>
+<p>还是上图, Google 官方对生命周期的解释.</p>
+<a id="more"></a>
+
+<p><img src="https://developer.android.com/images/activity_lifecycle.png" alt="image"></p>
+<p>首先我们知道生命周期一共有<br>7种不同的生命周期.</p>
+<ul>
+<li>onCreate</li>
+<li>onStart</li>
+<li>onResume</li>
+<li>onPause</li>
+<li>onStop</li>
+<li>onRestart</li>
+<li>onDestroy</li>
+</ul>
+<p>这 <strong>7种</strong> 生命周期代表了一个 Activity 的生命方式, 但在了解生命周期之前我们要知道 Android 的 Activity 是栈管理方式 .</p>
+<p>栈管理在我现在的理解就一层一层的把 Activity 堆起来, 所以也有名词是”堆栈”.<br>我们启动2个 Activity 的时候, A 先显示 B 后显示,secondActivity 就到了栈顶(被显示)而 firstActivity 就到了 secondActivity栈的下面.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Activity 名字</th>
+<th align="left">栈级</th>
+<th align="left">视图</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">secondActivity</td>
+<td align="left">栈顶</td>
+<td align="left">正在显示</td>
+</tr>
+<tr>
+<td align="left">firstActivity</td>
+<td align="left">栈内</td>
+<td align="left">隐藏</td>
+</tr>
+</tbody></table>
+<p>这时候我们打开了thirdActivity, 那么栈内是这样的.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Activity 名字</th>
+<th align="left">栈级</th>
+<th align="left">视图</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">thirdActivity</td>
+<td align="left">栈顶</td>
+<td align="left">正在显示</td>
+</tr>
+<tr>
+<td align="left">secondActivity</td>
+<td align="left">栈内</td>
+<td align="left">隐藏</td>
+</tr>
+<tr>
+<td align="left">firstActivity</td>
+<td align="left">栈内</td>
+<td align="left">隐藏</td>
+</tr>
+</tbody></table>
+<p>新打开的栈会到栈的最顶上, 而上一次所显示的活动会被压下去一级.</p>
+<p>如果说这时候我们点击返回键回到. secondActivity, 那么栈内层级又会出现这样改变, 因为我们从 <strong>thirdActivity</strong> 进行了返回按键( Android ) 那么根据生命周期的原理,<br>如果一个 Activity 不在被用户所见 那么他的生命周期会从 onResume( 正在显示 )–&gt;onPause ( 暂停 )–&gt;onStop( 不被显示 )–&gt;onDestroy ( 销毁 )</p>
+<hr>
+<p>和栈有关系的管理方式还有四种 Android 的活动启动模式。</p>
+<ul>
+<li>standard (默认)</li>
+<li>singleTop</li>
+<li>singleTask</li>
+<li>singInstance</li>
+</ul>
+<h3 id="standard"><a href="#standard" class="headerlink" title="standard"></a>standard</h3><p>在栈管理中,每一次有新的活动启动就会对活动创建一个新的实例, 例如我在 firstActivity 中在启动一次 firstActivity , 栈内就会出现两个 firstActivity, 而不是一个. 也就是说明你需要按2次返回键, 才会退出这个程序.</p>
+<h3 id="singleTOP"><a href="#singleTOP" class="headerlink" title="singleTOP"></a>singleTOP</h3><p>standard 的启动模式明显是没有那么符合逻辑的, 因为我们日常的 app 里并没有说到要对某一个 Activity 疯狂的输出重复的实例 那么 singleTop 和 standard 的区别在于, 当属于 singleTop 的 firstActivity 在栈顶时, 启动 firstActivity 就不会像 standard 那样创建一个新的 firstActivity 的实例, 但 firstActivity 不在栈顶时, singleTop 还是会创建一个新的 firstActivity.<br>也就是说 singleTop 和 standard 的区别在于, singleTop 当 Activity 在栈顶时启动自己不会再创建一个新的实例,而 standard 是无论何时都会创建新的实例.</p>
+<h3 id="singleTask"><a href="#singleTask" class="headerlink" title="singleTask"></a>singleTask</h3><p>singleTask 就是解决以上两个启动模式里面重复创建实例的启动模式, 他会再你启动 Activity 时在栈内进行查找, 如果站内有即将要被启动的 Activity 时就会把这个 Activity 调到栈顶. 如果站内没有这个 Activity 才会重新创建, 减少了 重复创建 Activity实例.</p>
+<h3 id="singleinstance"><a href="#singleinstance" class="headerlink" title="singleinstance"></a>singleinstance</h3><p>该启动模式和之前的三个启动模式概念完全不一样, 只要是被设置过 singleinstance 的启动模式的 Activity会启动一个新的返回栈来管理这个活动, 而新的返回栈的作用大多都在于程序之间互相调用时的栈管理问题, 我们不可能因为对方程序调用我们的某一活动时, 返回是需要一层一层的返回到退出程序, 而是有一个新的返回栈管理来针对这些程序之间的调用, 使返回时的层级更简单. singleinstance 我不是太了解, 可能说的太过含糊, 有兴趣的同学可以自己去查阅一下.</p>
+<hr>
+<p>我在说 Activity 时先说明的是栈和启动模式上,因为我自己在理解生命周期时是先看的生命周期再看的栈和启动模式, 我觉得这个顺序不太好, 因为生命周期这个词的意思分为生命 // 周期 我们需要知道什么是生命, 什么是周期之后再来看生命周期的过程会更容易理解一点.</p>
+<p>回到上面我们再看这个图, 就可以很明显的理解图中的意思了.</p>
+<p>创建一个新的 Activity 时生命周期会经历<br>onCreate-&gt;onStart-&gt;onResume<br>展现到用户的手机界面上, 和用户进行交互过程.<br>如果用户在这个过程中, 通过交互打开了其他的 Activity, 那么之前的 Activity 就会进入到<br>onPause-&gt;onStop-&gt;onDestroy 这三步中, 至于会进入到哪一步, 跟用户的操作有绝大的关系 也跟系统管理回收机制有很大的关系.<br>在这个里面唯一没有提到的就是 onRestart, onRestart 是属于在 onStop的生命体时, 我们重新启动了这个 Activity, 我们就会通过 onRestart 进入到 onStart-&gt;onResume.</p>
+<p>说了这么多生命周期, 那到底生命周期有什么用.<br>简单来说每个 Activity 的生命周期这七种, 系统都有回调方法, 也就是说我们在程序开发中可能会根据每种不同的生命周期做不同的事情, 可以再生命周期时进行交互工作, 比如我们知道用户要退出程序了, 可以提示他是否是误操作, 连续按2次 Back 我们才会退出.</p>
+<p>也有可能是用户在未关闭程序时, 挂载到后台, 当从后台再次启动程序时 我们需要刷新程序里的数据 和网络进行通信工作, 为了做到更好的交互, 我们就可以再 onRestart 里做这些工作.</p>
+<p>生命周期是每个 Android工程师必须理解的地方, 我也是一样, 我也在学习的过程中逐渐完善.<br>所以相当于写一篇自己的认知, 无论对错总要总结!</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Android/" rel="tag"># Android</a>
+            
+              <a href="/tags/live/" rel="tag"># live</a>
+            
+              <a href="/tags/%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" rel="tag"># 生命周期</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2015/07/22/vps-bak/" rel="next" title="CentOS 6.5自动备份网站及数据库并发送到邮箱">
+                  <i class="fa fa-chevron-left"></i> CentOS 6.5自动备份网站及数据库并发送到邮箱
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2017/07/03/c-zhi-shu-qiu-yin/" rel="prev" title="C语言-求质因数">
+                  C语言-求质因数 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    
+  <div class="comments" id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#standard"><span class="nav-number">1.</span> <span class="nav-text">standard</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#singleTOP"><span class="nav-number">2.</span> <span class="nav-text">singleTOP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#singleTask"><span class="nav-number">3.</span> <span class="nav-text">singleTask</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#singleinstance"><span class="nav-number">4.</span> <span class="nav-text">singleinstance</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="Millyn">
+  <p class="site-author-name" itemprop="name">Millyn</p>
+  <div class="site-description" itemprop="description">Product / Code / PHP / Python / Docker</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span>
+        
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Millyn</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=66480545";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.2"></script><script src="/js/motion.js?v=7.4.2"></script>
+<script src="/js/schemes/pisces.js?v=7.4.2"></script>
+<script src="/js/next-boot.js?v=7.4.2"></script>
+
+  <script defer src="/lib/three/three.min.js"></script>
+    
+    <script defer src="/lib/three/three-waves.min.js"></script>
+  
+    
+    <script defer src="/lib/three/canvas_lines.min.js"></script>
+  
+    
+    <script defer src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://dont-door.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  function disqus_config() {
+    this.page.url = "https://y85.pw/2017/06/23/Android-alive-function/";
+    this.page.identifier = "2017/06/23/Android-alive-function/";
+    this.page.title = 'Android生命周期的理解方式';
+  }
+  function loadComments() {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://dont-door.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  }
+    (function() {
+      var offsetTop = document.getElementById('comments').offsetTop - window.innerHeight;
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        window.addEventListener('load', loadComments, false);
+      } else {
+        var disqus_scroll = () => {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = document.getElementById('comments').offsetTop - window.innerHeight;
+          var scrollTop = window.scrollY;
+
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            window.removeEventListener('scroll', disqus_scroll);
+            loadComments();
+          }
+        };
+        window.addEventListener('scroll', disqus_scroll);
+      }
+    })();
+  
+</script>
+
+</body>
+</html>
