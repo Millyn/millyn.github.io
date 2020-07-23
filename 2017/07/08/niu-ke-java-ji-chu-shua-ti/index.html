@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="牛客是个不错的刷题地方，让我想起当时考驾照的时候那种刷题感觉，可对于开发来说的题目和考驾照差别太多。当然，这些题目里也有那种题目意义混淆, 和一些让你犯小错误的地方。今天刷了点题目，做点总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="牛客Java基础刷题解析">
+<meta property="og:url" content="https://y85.pw/2017/07/08/niu-ke-java-ji-chu-shua-ti/index.html">
+<meta property="og:site_name" content="没门的城">
+<meta property="og:description" content="牛客是个不错的刷题地方，让我想起当时考驾照的时候那种刷题感觉，可对于开发来说的题目和考驾照差别太多。当然，这些题目里也有那种题目意义混淆, 和一些让你犯小错误的地方。今天刷了点题目，做点总结。">
+<meta property="article:published_time" content="2017-07-07T16:29:16.000Z">
+<meta property="article:modified_time" content="2019-10-24T06:32:32.000Z">
+<meta property="article:author" content="Millyn">
+<meta property="article:tag" content="JAVA">
+<meta property="article:tag" content="牛客刷题">
+<meta property="article:tag" content="编程技术">
+<meta property="article:tag" content="String">
+<meta property="article:tag" content="Stringbuff">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://y85.pw/2017/07/08/niu-ke-java-ji-chu-shua-ti/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>牛客Java基础刷题解析 | 没门的城</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">没门的城</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      
+    
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://y85.pw/2017/07/08/niu-ke-java-ji-chu-shua-ti/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Millyn">
+      <meta itemprop="description" content="Product / Code / PHP / Python / Docker">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="没门的城">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            牛客Java基础刷题解析
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2017-07-08 00:29:16" itemprop="dateCreated datePublished" datetime="2017-07-08T00:29:16+08:00">2017-07-08</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-10-24 14:32:32" itemprop="dateModified" datetime="2019-10-24T14:32:32+08:00">2019-10-24</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/07/08/niu-ke-java-ji-chu-shua-ti/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/07/08/niu-ke-java-ji-chu-shua-ti/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>牛客是个不错的刷题地方，让我想起当时考驾照的时候那种刷题感觉，<br>可对于开发来说的题目和考驾照差别太多。<br>当然，这些题目里也有那种题目意义混淆, 和一些让你犯小错误的地方。<br>今天刷了点题目，做点总结。</p>
+<a id="more"></a>
+
+<h1 id="关于下列程序段的输出结果，说法正确的是：（-）"><a href="#关于下列程序段的输出结果，说法正确的是：（-）" class="headerlink" title="关于下列程序段的输出结果，说法正确的是：（ ）"></a>关于下列程序段的输出结果，说法正确的是：（ ）</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class MyClass&#123;</span><br><span class="line">static int i;</span><br><span class="line">public static void main(String argv[])&#123;</span><br><span class="line">System.out.println(i);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>正确答案 D</p>
+<p>A. 有错误，变量i没有初始化。<br>B. null<br>C. 1<br>D. 0</p>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><p>首先我们可以看到调用的i是一个static变量, static修饰过的变量和方法都会在程序执行时优先被初始化.<br>所以i不可能没有被初始化, 那么null并不是int类型的”空值表达”.<br>i没有被赋予1这个值, 所以也不是1.<br>那么int类型在定义后没有被赋值的情况下, 默认是”0”这个空值去代表它.</p>
+<h1 id="关于抽象类和接口叙述正确的是"><a href="#关于抽象类和接口叙述正确的是" class="headerlink" title="关于抽象类和接口叙述正确的是? ()"></a>关于抽象类和接口叙述正确的是? ()</h1><p>正确答案 C</p>
+<p>A. 抽象类和接口都能实例化的<br>B. 抽象类不能实现接口<br>C. 抽象类方法的访问权限默认都是public<br>D. 接口方法的访问权限默认都是public</p>
+<h2 id="解析-1"><a href="#解析-1" class="headerlink" title="解析"></a>解析</h2><p>抽象类不可以被实例化<br>抽象类可以实现接口<br>抽象类的方法默认权限是protected<br>接口方法的访问权限默认都是public</p>
+<h1 id="关于static说法不正确的是"><a href="#关于static说法不正确的是" class="headerlink" title="关于static说法不正确的是()"></a>关于static说法不正确的是()</h1><p>正确答案 D</p>
+<p>A. 可以直接用类名来访问类中静态方法(public权限)<br>B. 静态块仅在类加载时执行一次<br>C. static方法就是没有this的方法<br>D. 不可以用对象名来访问类中的静态方法(public权限)</p>
+<h2 id="解析-2"><a href="#解析-2" class="headerlink" title="解析"></a>解析</h2><p>因为static是静态的, 所以他不需要用对象去初始化, 也就没有所谓用”对象名”来访问”类”</p>
+<h1 id="String-str1-“abc”，“abc”分配在内存哪个区域？"><a href="#String-str1-“abc”，“abc”分配在内存哪个区域？" class="headerlink" title="String str1 = “abc”，“abc”分配在内存哪个区域？"></a>String str1 = “abc”，“abc”分配在内存哪个区域？</h1><p>正确答案 C</p>
+<p>A. 堆<br>B. 栈<br>C. 字符常量区<br>D. 寄存器</p>
+<h2 id="解析-3"><a href="#解析-3" class="headerlink" title="解析"></a>解析</h2><p>用new创建的对象都在堆里.<br>栈里存放的是基本数据类型和临时变量<br>在Java里, 说到String是不可变的, 原因就在于String的值会是”常量”, 常量都知道是不可变.<br>所以在String的值里使用”+”这种操作符会有效率底下一说的原因就在于,<br>每一次”+”出来的新值, 实际上是产生了一个新的常量, 而不是对旧的值进行修改.</p>
+<h1 id="线程安全的map在JDK-1-5及其更高版本环境-有哪几种方法可以实现"><a href="#线程安全的map在JDK-1-5及其更高版本环境-有哪几种方法可以实现" class="headerlink" title="线程安全的map在JDK 1.5及其更高版本环境 有哪几种方法可以实现?"></a>线程安全的map在JDK 1.5及其更高版本环境 有哪几种方法可以实现?</h1><p>正确答案: C D</p>
+<p>A. Map map = new HashMap()<br>B. Map map = new TreeMap()<br>C. Map map = new ConcurrentHashMap();<br>D. Map map = Collections.synchronizedMap(new HashMap());</p>
+<h2 id="解析-4"><a href="#解析-4" class="headerlink" title="解析"></a>解析</h2><p>HashMap和TreeMap的线程都不是安全的.<br>ConcurrentHashMap是安全线程.<br>Collections.synchronizedMap可以使得HashMap变为一个安全的线程.<br>因为synchronized在英语里表达的就是”同步的”</p>
+<h1 id="Java语言支持程序并行执行的多线程编程，实现了一般传统语言难以实现的某些功能；Java的线程是通过java-lang-1-类来实现的，在该类中封装了虚拟的-2"><a href="#Java语言支持程序并行执行的多线程编程，实现了一般传统语言难以实现的某些功能；Java的线程是通过java-lang-1-类来实现的，在该类中封装了虚拟的-2" class="headerlink" title="Java语言支持程序并行执行的多线程编程，实现了一般传统语言难以实现的某些功能；Java的线程是通过java.lang. 1 类来实现的，在该类中封装了虚拟的 2"></a>Java语言支持程序并行执行的多线程编程，实现了一般传统语言难以实现的某些功能；Java的线程是通过java.lang. 1 类来实现的，在该类中封装了虚拟的 2</h1><p>正确答案:<br>1= Thread 即为 java.lang.Thread<br>2= CPU</p>
+<h1 id="实现或继承了Collection接口的是（）"><a href="#实现或继承了Collection接口的是（）" class="headerlink" title="实现或继承了Collection接口的是（）"></a>实现或继承了Collection接口的是（）</h1><p>正确答案: B C E</p>
+<p>A. Map<br>B. List<br>C. Vector<br>D. Iterator<br>E. Set</p>
+<h2 id="解析-5"><a href="#解析-5" class="headerlink" title="解析"></a>解析</h2><p>Map是接口, 他的定义是public interface Map&lt;K,V&gt;<br>list也是接口, 定义是public interface List<E> extends Collection<E><br>Vector继承与List接口<br>Iterator接口, 他的定义是public interface Iterator<E><br>Set接口, 他的定义是public interface Set<E> extends Collection<E><br>现在就很明显的能表达, B C E 是正确答案</p>
+<h1 id="以下集合对象中哪几个是线程安全的？"><a href="#以下集合对象中哪几个是线程安全的？" class="headerlink" title="以下集合对象中哪几个是线程安全的？"></a>以下集合对象中哪几个是线程安全的？</h1><p>正确答案: B C D</p>
+<p>A. ArrayList<br>B. Vector<br>C. Hashtable<br>D. Stack</p>
+<h2 id="解析-6"><a href="#解析-6" class="headerlink" title="解析"></a>解析</h2><p>ArrayList并不是安全线程, Vector和HashTable是安全线程, Stack继承与Vector所以它也是安全线程.</p>
+<h1 id="类-ABC-定义如下：-将以下哪个方法插入行-3-是不合法的。（-）。"><a href="#类-ABC-定义如下：-将以下哪个方法插入行-3-是不合法的。（-）。" class="headerlink" title="类 ABC 定义如下： 将以下哪个方法插入行 3 是不合法的。（ ）。"></a>类 ABC 定义如下： 将以下哪个方法插入行 3 是不合法的。（ ）。</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public  class  ABC&#123;</span><br><span class="line">    public  int  max( int  a, int  b) &#123;   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>正确答案: B</p>
+<p>A. public float max(float a, float b, float c){ }<br>B. public int max (int c, int d){ }<br>C. public float max(float a, float b){ }<br>D. private int max(int a, int b, int c){ }</p>
+<h2 id="解析-7"><a href="#解析-7" class="headerlink" title="解析"></a>解析</h2><p>在定义方法时的形参, 编译器是不认形参名字只认形参的类型的.<br>public int max (int c, int d) 和 public int max (int a, int b)<br>对于编译器来说都是接受2个int类型的参数, 所以如果同时有这2个方法出现.<br>编译器接受2个int参数的调用时, 就不知道该去找哪一个方法才是正确的.</p>
+<h1 id="检查程序，是否存在问题，如果存在指出问题所在，如果不存在，说明输出结果。"><a href="#检查程序，是否存在问题，如果存在指出问题所在，如果不存在，说明输出结果。" class="headerlink" title="检查程序，是否存在问题，如果存在指出问题所在，如果不存在，说明输出结果。"></a>检查程序，是否存在问题，如果存在指出问题所在，如果不存在，说明输出结果。</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public class HelloB extends HelloA </span><br><span class="line">&#123;</span><br><span class="line"> public HelloB() &#123;</span><br><span class="line">     System.out.println(&quot;I’m B class&quot;);</span><br><span class="line"> &#125;</span><br><span class="line"> static &#123;</span><br><span class="line">     System.out.println(&quot;static B&quot;);</span><br><span class="line"> &#125;</span><br><span class="line"> public static void main(String[] args) &#123;</span><br><span class="line">     new HelloB();</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line">class HelloA</span><br><span class="line">&#123;</span><br><span class="line"> public HelloA()&#123;</span><br><span class="line">     System.out.println(&quot;I’m A class&quot;);</span><br><span class="line"> &#125;</span><br><span class="line"> static&#123;</span><br><span class="line">     System.out.println(&quot;static A&quot;);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>正确答案: C</p>
+<table>
+<thead>
+<tr>
+<th align="left">答案</th>
+<th align="left">结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">A</td>
+<td align="left">static A / I’m A class / static B /I’m B class</td>
+</tr>
+<tr>
+<td align="left">B</td>
+<td align="left">I’m A class / I’m B class / static A / static B</td>
+</tr>
+<tr>
+<td align="left">C</td>
+<td align="left">static A / static B / I’m A class / I’m B class</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">I’m A class / static A / I’m B class / static B</td>
+</tr>
+</tbody></table>
+<h2 id="解析-8"><a href="#解析-8" class="headerlink" title="解析"></a>解析</h2><p>这一题主要是讲static和初始化对象时的流程.<br>我们知道的执行顺序是<br>HelloB里的main方法new HelloB();那么HelloB继承与HelloA, 所以<br>HelloA(构造方法)执行顺序要比HelloB(构造方法)前.<br>但HelloA和B中都有static方法, 那么static的优先级又会比构造方法高<br>所以这段代码的执行顺序是<br>HelloA_Static-&gt;HelloB_Static-&gt;HelloA_Constructor-&gt;HelloB_Constructor</p>
+<h1 id="String与StringBuffer的区别。"><a href="#String与StringBuffer的区别。" class="headerlink" title="String与StringBuffer的区别。"></a>String与StringBuffer的区别。</h1><p>正确答案: A</p>
+<p>A. String是不可变的对象，StringBuffer是可以再编辑的<br>B. String是常量，StringBuffer是变量<br>C. String是可变的对象，StringBuffer是不可以再编辑的<br>D. 以上说法都不正确</p>
+<h2 id="解析-9"><a href="#解析-9" class="headerlink" title="解析"></a>解析</h2><p>String是不可变的对象原因是, String的值是常量, 常量就是不变值.<br>关于StringBuffer, 可以来解析一下StringBuffer的源码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public StringBuffer(String str) &#123;</span><br><span class="line">    super(str.length() + 16);</span><br><span class="line">    append(str);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>StringBuffer的构造器传入一个str时, 会把传入这个str的length(长度)+16在父类进行构造方法的调用.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">AbstractStringBuilder(int capacity) &#123;</span><br><span class="line">    value &#x3D; new char[capacity];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个是super()父类的构造方法.<br>可以看到这个str.length() +16的值传进来后是根据这个值创建了一个char[]对象<br>在看append(str);<br>在StringBuffer里是复写了append这个方法.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public synchronized StringBuffer append(String str) &#123;</span><br><span class="line">    toStringCache &#x3D; null;</span><br><span class="line">    super.append(str);</span><br><span class="line">    return this;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>toStringCache</code>是定义的一个全局变量<code>private transient char[] toStringCache;</code><br>然后在调用父类的append</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public AbstractStringBuilder append(String str) &#123;</span><br><span class="line">    if (str &#x3D;&#x3D; null)</span><br><span class="line">        return appendNull();</span><br><span class="line">    int len &#x3D; str.length();</span><br><span class="line">    ensureCapacityInternal(count + len);</span><br><span class="line">    str.getChars(0, len, value, count);</span><br><span class="line">    count +&#x3D; len;</span><br><span class="line">    return this;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ensureCapacityInternal()</code> 这里我们传入了count + len , count目前是只有声明, 没有内容也就是0.<br>0+len, 如果string是”ABC” 那么len是3. 即等于传递了3这个参数过去.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">private void ensureCapacityInternal(int minimumCapacity) &#123;</span><br><span class="line">        &#x2F;&#x2F; overflow-conscious code</span><br><span class="line">        if (minimumCapacity - value.length &gt; 0) &#123;</span><br><span class="line">            value &#x3D; Arrays.copyOf(value,</span><br><span class="line">                    newCapacity(minimumCapacity));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>到这里ensureCapacityInternal这里, 进行第一句if判断<br><code>if (minimumCapacity - value.length &gt; 0) {</code><br>我们还是作刚才那个例子, 3 - value.length &gt; 0 这个value.length是什么?<br>value就是在最早<code>StringBuffer</code>的构造方法, 会创建一个char[str.length+16]的char对象<br>3 - 19 &gt; 0 是否定的, 所以不执行.<br>接下来执行<code>str.getChars(0, len, value, count);</code><br>已知len=3, value=char[str.length+16],count=0;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public void getChars(int srcBegin, int srcEnd, char dst[], int dstBegin) &#123;</span><br><span class="line">    if (srcBegin &lt; 0) &#123;</span><br><span class="line">        throw new StringIndexOutOfBoundsException(srcBegin);</span><br><span class="line">    &#125;</span><br><span class="line">    if (srcEnd &gt; value.length) &#123;</span><br><span class="line">        throw new StringIndexOutOfBoundsException(srcEnd);</span><br><span class="line">    &#125;</span><br><span class="line">    if (srcBegin &gt; srcEnd) &#123;</span><br><span class="line">        throw new StringIndexOutOfBoundsException(srcEnd - srcBegin);</span><br><span class="line">    &#125;</span><br><span class="line">    System.arraycopy(value, srcBegin, dst, dstBegin, srcEnd - srcBegin);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有了数据, 我们把形参可以认为是实参<br>srcBegin = 0<br>srcEnd = 3<br>dst[] = char[19]<br>dstBegin = 0<br>一步一步执行判断, 可以看到判断如果是true那么肯定会出错, throw 一个错误.<br>那么如果错误都过了一边之后, 进入到最后一个环节, arraycopy.<br><code>System.arraycopy(value, srcBegin, dst, dstBegin, srcEnd - srcBegin);</code><br>执行拷贝</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public static native void arraycopy(Object src,  int  srcPos,Object dest, int destPos,int length);</span><br></pre></td></tr></table></figure>
+
+<p>这5个参数是<br>原obj，原位置，目标obj ， 目标位置，长度</p>
+<p>到这里, 我们Stringbuffer就已经赋值完成了.<br>通过这些我们就知道Stringbuffer为什么是可变的, 首先他并不是传统的”字符串”<br>而是通过char类型的数组拼接起来的也就是为什么我们输出Stringbuffer类型字符串时需要使用toString()方法.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public synchronized String toString() &#123;</span><br><span class="line">    if (toStringCache &#x3D;&#x3D; null) &#123;</span><br><span class="line">        toStringCache &#x3D; Arrays.copyOfRange(value, 0, count);</span><br><span class="line">    &#125;</span><br><span class="line">    return new String(toStringCache, true);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/JAVA/" rel="tag"># JAVA</a>
+            
+              <a href="/tags/%E7%89%9B%E5%AE%A2%E5%88%B7%E9%A2%98/" rel="tag"># 牛客刷题</a>
+            
+              <a href="/tags/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/" rel="tag"># 编程技术</a>
+            
+              <a href="/tags/String/" rel="tag"># String</a>
+            
+              <a href="/tags/Stringbuff/" rel="tag"># Stringbuff</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2017/07/05/java-ji-he-xing-neng-bi-jiao/" rel="next" title="Java集合性能比较">
+                  <i class="fa fa-chevron-left"></i> Java集合性能比较
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2017/09/06/she-ji-mo-shi-guan-cha-zhe-mo-shi/" rel="prev" title="设计模式 —— 观察者模式">
+                  设计模式 —— 观察者模式 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    
+  <div class="comments" id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#关于下列程序段的输出结果，说法正确的是：（-）"><span class="nav-number">1.</span> <span class="nav-text">关于下列程序段的输出结果，说法正确的是：（ ）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解析"><span class="nav-number">1.1.</span> <span class="nav-text">解析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于抽象类和接口叙述正确的是"><span class="nav-number">2.</span> <span class="nav-text">关于抽象类和接口叙述正确的是? ()</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解析-1"><span class="nav-number">2.1.</span> <span class="nav-text">解析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于static说法不正确的是"><span class="nav-number">3.</span> <span class="nav-text">关于static说法不正确的是()</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解析-2"><span class="nav-number">3.1.</span> <span class="nav-text">解析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#String-str1-“abc”，“abc”分配在内存哪个区域？"><span class="nav-number">4.</span> <span class="nav-text">String str1 &#x3D; “abc”，“abc”分配在内存哪个区域？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解析-3"><span class="nav-number">4.1.</span> <span class="nav-text">解析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线程安全的map在JDK-1-5及其更高版本环境-有哪几种方法可以实现"><span class="nav-number">5.</span> <span class="nav-text">线程安全的map在JDK 1.5及其更高版本环境 有哪几种方法可以实现?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解析-4"><span class="nav-number">5.1.</span> <span class="nav-text">解析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java语言支持程序并行执行的多线程编程，实现了一般传统语言难以实现的某些功能；Java的线程是通过java-lang-1-类来实现的，在该类中封装了虚拟的-2"><span class="nav-number">6.</span> <span class="nav-text">Java语言支持程序并行执行的多线程编程，实现了一般传统语言难以实现的某些功能；Java的线程是通过java.lang. 1 类来实现的，在该类中封装了虚拟的 2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现或继承了Collection接口的是（）"><span class="nav-number">7.</span> <span class="nav-text">实现或继承了Collection接口的是（）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解析-5"><span class="nav-number">7.1.</span> <span class="nav-text">解析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#以下集合对象中哪几个是线程安全的？"><span class="nav-number">8.</span> <span class="nav-text">以下集合对象中哪几个是线程安全的？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解析-6"><span class="nav-number">8.1.</span> <span class="nav-text">解析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类-ABC-定义如下：-将以下哪个方法插入行-3-是不合法的。（-）。"><span class="nav-number">9.</span> <span class="nav-text">类 ABC 定义如下： 将以下哪个方法插入行 3 是不合法的。（ ）。</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解析-7"><span class="nav-number">9.1.</span> <span class="nav-text">解析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#检查程序，是否存在问题，如果存在指出问题所在，如果不存在，说明输出结果。"><span class="nav-number">10.</span> <span class="nav-text">检查程序，是否存在问题，如果存在指出问题所在，如果不存在，说明输出结果。</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解析-8"><span class="nav-number">10.1.</span> <span class="nav-text">解析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#String与StringBuffer的区别。"><span class="nav-number">11.</span> <span class="nav-text">String与StringBuffer的区别。</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解析-9"><span class="nav-number">11.1.</span> <span class="nav-text">解析</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="Millyn">
+  <p class="site-author-name" itemprop="name">Millyn</p>
+  <div class="site-description" itemprop="description">Product / Code / PHP / Python / Docker</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-name">tags</span>
+        
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Millyn</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=66480545";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.4.2.js"></script>
+
+<script src="/js/motion.js?v=7.4.2.js"></script>
+
+
+<script src="/js/schemes/pisces.js?v=7.4.2.js"></script>
+
+
+<script src="/js/next-boot.js?v=7.4.2.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://dont-door.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  function disqus_config() {
+    this.page.url = "https://y85.pw/2017/07/08/niu-ke-java-ji-chu-shua-ti/";
+    this.page.identifier = "2017/07/08/niu-ke-java-ji-chu-shua-ti/";
+    this.page.title = '牛客Java基础刷题解析';
+  }
+  function loadComments() {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://dont-door.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  }
+    (function() {
+      var offsetTop = document.getElementById('comments').offsetTop - window.innerHeight;
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        window.addEventListener('load', loadComments, false);
+      } else {
+        var disqus_scroll = () => {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = document.getElementById('comments').offsetTop - window.innerHeight;
+          var scrollTop = window.scrollY;
+
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            window.removeEventListener('scroll', disqus_scroll);
+            loadComments();
+          }
+        };
+        window.addEventListener('scroll', disqus_scroll);
+      }
+    })();
+  
+</script>
+
+</body>
+</html>
