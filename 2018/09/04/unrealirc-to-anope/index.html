@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Unrealircd 是一款基于 C++ 的开源 IRCD 服务端应用。 Anope 同样也是一款 C++ 的开源 IRCD Module 类型应用，Anope 相当于 IRC 的扩展包，他自带了很多常用的 Module，便于管理 IRC 。 两款服务端程序按照文档跑起来很简单（如果你无法使他们跑起来，我建议你寻找了解部署的工程师朋友帮助你，因为参考文档完全可以使其跑起来，哦对了， 不要 Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unrealircd 和 Anope 配置记录">
+<meta property="og:url" content="https://y85.pw/2018/09/04/unrealirc-to-anope/index.html">
+<meta property="og:site_name" content="没门的城">
+<meta property="og:description" content="Unrealircd 是一款基于 C++ 的开源 IRCD 服务端应用。 Anope 同样也是一款 C++ 的开源 IRCD Module 类型应用，Anope 相当于 IRC 的扩展包，他自带了很多常用的 Module，便于管理 IRC 。 两款服务端程序按照文档跑起来很简单（如果你无法使他们跑起来，我建议你寻找了解部署的工程师朋友帮助你，因为参考文档完全可以使其跑起来，哦对了， 不要 Git">
+<meta property="article:published_time" content="2018-09-04T09:12:38.000Z">
+<meta property="article:modified_time" content="2019-10-24T06:32:23.000Z">
+<meta property="article:author" content="Millyn">
+<meta property="article:tag" content="IRCD">
+<meta property="article:tag" content="UnrealIrc">
+<meta property="article:tag" content="Anope">
+<meta property="article:tag" content="IRC">
+<meta property="article:tag" content="TRPG">
+<meta property="article:tag" content="跑团">
+<meta property="article:tag" content="DND">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://y85.pw/2018/09/04/unrealirc-to-anope/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Unrealircd 和 Anope 配置记录 | 没门的城</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">没门的城</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      
+    
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://y85.pw/2018/09/04/unrealirc-to-anope/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Millyn">
+      <meta itemprop="description" content="Product / Code / PHP / Python / Docker">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="没门的城">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            Unrealircd 和 Anope 配置记录
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2018-09-04 17:12:38" itemprop="dateCreated datePublished" datetime="2018-09-04T17:12:38+08:00">2018-09-04</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-10-24 14:32:23" itemprop="dateModified" datetime="2019-10-24T14:32:23+08:00">2019-10-24</time>
+              </span>
+            
+          
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/09/04/unrealirc-to-anope/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/09/04/unrealirc-to-anope/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Unrealircd 是一款基于 C++ 的开源 IRCD 服务端应用。</p>
+<p>Anope 同样也是一款 C++ 的开源 IRCD Module 类型应用，Anope 相当于 IRC 的扩展包，他自带了很多常用的 Module，便于管理 IRC 。</p>
+<p>两款服务端程序按照文档跑起来很简单（如果你无法使他们跑起来，我建议你寻找了解部署的工程师朋友帮助你，因为参考文档完全可以使其跑起来，哦对了， 不要 Git Clone， 直接下载最新的发布包就行），但是互通的过程是有点麻烦的。</p>
+<p>Unrealircd 和 Anope 都是独立运行的，但 Anope 运行时必须能够链接上配置好的 Unrealircd 服务器，所以启动顺序应该是先启动 Unrealircd（以下简称IRCD） 再启动 Anope。</p>
+<p>OK，开始正题，有那些配置是官方文档没有说，但需要调整的。</p>
+<a id="more"></a>
+
+<h2 id="IRCD-中文昵称"><a href="#IRCD-中文昵称" class="headerlink" title="IRCD 中文昵称"></a>IRCD 中文昵称</h2><ol>
+<li>在 <code>conf/unrealircd.conf</code> 找到 <code>set {</code> 的开始行，在 set 这个块级配置下，增加参数</li>
+<li><code>allowed-nickchars { gbk };</code></li>
+<li>原文参考 <a href="https://www.unrealircd.org/docs/Nick_Character_Sets" target="_blank" rel="noopener" title="WIKI">WIKI</a></li>
+<li>原文里推荐的是 <code>chinese-simp; chinese-trad;</code> 个人觉得这2个配置实际上都是 GBK ，所以直接配置 GBK 是最好的。</li>
+</ol>
+<h2 id="Anope-配置-IRCD-链接"><a href="#Anope-配置-IRCD-链接" class="headerlink" title="Anope 配置 IRCD 链接"></a>Anope 配置 IRCD 链接</h2><p>处理这个，我觉得第一件事情应该是先理解，IRCD 和 Anope 怎么样产生链接。</p>
+<p>我对 IRCD 了解不深，这一次处理这个业务主要是为了果园的 IRCD 服务重构直接上手学习的，Cpp 方面的代码我也只能说作为浅看，具体实现和一些底层方面的，我没有做过多了解。</p>
+<h3 id="如何产生链接"><a href="#如何产生链接" class="headerlink" title="如何产生链接"></a>如何产生链接</h3><p>IRCD 需要新增一个 Link 配置，这个 Link 配置后，处于等待服务连接至<code>自己</code>的状态，也就是说 IRCD 需要公开一个自己被他人管理的接口，那么这里就通过 Link 来实现。</p>
+<p>例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">link anope.test.org &#123;</span><br><span class="line">	incoming &#123;</span><br><span class="line">		mask *;</span><br><span class="line">	&#125;;</span><br><span class="line">	</span><br><span class="line">	outgoing &#123;</span><br><span class="line">		hostname 127.0.0.1;</span><br><span class="line">		port 6667;</span><br><span class="line">		options &#123; ssl; authoconnect; &#125;;</span><br><span class="line">	&#125;;</span><br><span class="line">	</span><br><span class="line">	password &quot;yourpassword&quot;;</span><br><span class="line">	hub *;</span><br><span class="line">	class servers;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我是这样写的 Link ， 有几个需要注意的地方是，因为 Anope 和 IRCD 在一台主机上，所以 Hostname 为 127.0.0.1 ，只通过本地链接。<br>Port options hub 这三个参数，建议自己查阅官方文档理解，我就不作过多叙述，这里需要记录下来的就是 <code>hostname port password</code> 三个参数在 Anope 去设置参数。</p>
+<h3 id="Anope-的配置"><a href="#Anope-的配置" class="headerlink" title="Anope 的配置"></a>Anope 的配置</h3><p>打开 Anope 应用根目录下的 <code>conf/services.conf</code>  找到 <code>uplink</code> 这个配置块（默认是存在的，需要修改 Value 就行）</p>
+<p>修改这个 uplink 块级下面的 <code>host / port / password</code> 三个参数的值，和配置 IRCD 的 Link 为一致。</p>
+<p>保存文件，启动 Anope 你应该会遇到报错，这个报错是提示你 Password 错了，不用担心，这并不是你 Password 错了，而是参数上的问题。</p>
+<p>还是 Anope 的配置文件，找到</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module</span><br><span class="line">&#123;</span><br><span class="line">	name &#x3D; &quot;inspircd20&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果你的 Anope 版本是官网最新的，那么应该是在 <code>263</code> 行。<br>修改 name 的值为 <code>unreal4</code> ，这个 <code>4</code> 的意思是指 unrealircd 版本为 4 开头，如果你的 IRCD 版本过低，是 3.2.x 版本的，那么修改为 <code>unreal</code> 即可</p>
+<p>保存文件，重新尝试启动你的 Anope ，一切正常。</p>
+<h2 id="Anope-NickName-Server-Chars-设置"><a href="#Anope-NickName-Server-Chars-设置" class="headerlink" title="Anope NickName Server Chars 设置"></a>Anope NickName Server Chars 设置</h2><p>在之前，我们已经提到了 IRCD 允许中文昵称，但 Anope 还未调整（就算调整了，也不支持中文名注册，但我们必须要先调整。</p>
+<p><code>conf/services.conf</code> -&gt; <code>nick_chars</code> 参数的值修改为 GBK </p>
+<h2 id="Anope-NS-注册中文名"><a href="#Anope-NS-注册中文名" class="headerlink" title="Anope NS 注册中文名"></a>Anope NS 注册中文名</h2><p>首先我们了解 NS 是 NickServ 这个服务，也就是昵称服务。<br>在 IRCD 独立运行的条件下，是没有 NickServ 这种功能的，是因为和 Anope 产生了链接，Anope 为 IRCD 提供了这个服务。</p>
+<p>但在 Anope 里，NickServ 是一个 Module（模块），简单来说是一个 Anope 插件，也就是说，Anope 有成千上万个插件， NickServ 是其中一个。</p>
+<p>OK，先说怎么使用插件</p>
+<h3 id="Anope-插件使用"><a href="#Anope-插件使用" class="headerlink" title="Anope 插件使用"></a>Anope 插件使用</h3><p>在 Anope 的 <code>conf</code> 文件夹下，有一个文件名为 <code>module.example.conf</code> 的文件，把这个文件 cp 一个去掉 <code>.example</code> 后缀的在当前目录下。</p>
+<p>module.conf 就是管理 Anope Module 的配置文件，现在既然已经有了配置文件，那么插件就会生效。</p>
+<p>重启 Anope 服务器，尝试一下指令，你会发现 /help 是可以输入的 但是昵称注册的命令是什么？你都不知道，我们还是到官方 <a href="https://wiki.anope.org/index.php/2.0/Modules/ns_register" target="_blank" rel="noopener" title="WIKI">WIKI</a> 看一下。</p>
+<p><code>/msg NickServ register MyPassword fred@example.com</code></p>
+<p>注册昵称，需要输入 password  和 邮箱，前面的都是必填的指令而已。</p>
+<p>WIKI 的下方有 <code>Default Configuration</code> 默认配置，我们把这段配置进行复制。</p>
+<p>然后重新打开 <code>module.conf</code> 文件，快速跳到文件尾部 ，把复制下来的配置，黏贴到文件里，保存。</p>
+<p>重启你的 Anope，尝试输入命令，你会发现如果你当前使用的是英文名，那么 Anope 会提示你注册成功，但你是中文名，就会注册失败。</p>
+<h3 id="解决中文名注册"><a href="#解决中文名注册" class="headerlink" title="解决中文名注册"></a>解决中文名注册</h3><p>中文名注册失败这个问题，我的解决思路很不好，但由于时间问题，我没有去过多的研究这个问题。<br>但面向需求的方面，先解决问题。</p>
+<p>我描述下我整体的解决思路。</p>
+<ol>
+<li>当中文名注册失败时，会有一串错误提示。</li>
+<li>我把错误提示复制下来，在 Anope 的 Github 进行 This Repo 的搜索，查看 Repo 下有那些文件出现了这些错误提示的<code>调用</code></li>
+<li>调用中有一个函数命名非常的符合我们的目标 <code>IsNickValid</code> </li>
+<li>看这个函数的解释 <a href="https://github.com/anope/anope/blob/368300d31990eeafc0c7835a21bc0f0835fed71b/src/protocol.cpp#L351" target="_blank" rel="noopener" title="Github">Github</a> </li>
+</ol>
+<p>在函数上已经表明，nickname 只允许 letter digit special 三个参数下的内容，那么 GBK 肯定是不在这个范围里的，所以当我们用中文名注册时， IsNikeVaild 触发判断后，都会返回 False ，拒绝注册。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * RFC: defination of a valid nick</span><br><span class="line"> * nickname &#x3D;  ( letter &#x2F; special ) ( letter &#x2F; digit &#x2F; special &#x2F; &quot;-&quot; )</span><br><span class="line"> * letter   &#x3D;  A-Z &#x2F; a-z</span><br><span class="line"> * digit    &#x3D;  0-9</span><br><span class="line"> * special  &#x3D;  [, ], \, &#96;, _, ^, &#123;, |, &#125;</span><br><span class="line"> **&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>到这里，我们已经找到了问题所在，就是 IsNickName 产生的问题，但我没有去修改这个函数让其支持 GBK 的验证，而是取巧了一个方法。</p>
+<p>考虑到 IRCD 也会对用户的 NickName 做一次是否规范的检查，所以暂时不考虑因为非法的 NickName 会导致服务器崩盘。</p>
+<p>找到 <code>modules/commands/ns_register.cpp</code> ns 注册插件的源文件，找到 Class <code>CommandNSRegister</code> 在下方会发现有一处调用了 <code>IsNickName</code> 把这一段代码注释掉 <a href="https://github.com/anope/anope/blob/368300d31990eeafc0c7835a21bc0f0835fed71b/modules/commands/ns_register.cpp#L169" target="_blank" rel="noopener" title="Github">Github</a> ，然后重新编译一次 Anope ，让修改过的 Module 生效，然后再重启 Anope 服务器。</p>
+<p>进入服务器，尝试中文 NickName 的注册。</p>
+<p>一切大功告成。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>IRCD 是上古时期的聊天工具，现在还在被使用，证明 IRC 必然有他自己的魅力，可能你一辈子都不会去使用 IRC，但可以思考下我作为一个不懂 C++ 和不了解 IRC 的伪工程师，是如何解决 Nickname 这个问题的，虽然解决方法不太对，但定位 Bug 的思路我认为是没错的。</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/IRCD/" rel="tag"># IRCD</a>
+            
+              <a href="/tags/UnrealIrc/" rel="tag"># UnrealIrc</a>
+            
+              <a href="/tags/Anope/" rel="tag"># Anope</a>
+            
+              <a href="/tags/IRC/" rel="tag"># IRC</a>
+            
+              <a href="/tags/TRPG/" rel="tag"># TRPG</a>
+            
+              <a href="/tags/%E8%B7%91%E5%9B%A2/" rel="tag"># 跑团</a>
+            
+              <a href="/tags/DND/" rel="tag"># DND</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2017/10/25/laradock-build-laravel/" rel="next" title="Laradock 部署 Laravel">
+                  <i class="fa fa-chevron-left"></i> Laradock 部署 Laravel
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/10/24/kuai-su-pai-xu/" rel="prev" title="Python 快速排序">
+                  Python 快速排序 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    
+  <div class="comments" id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#IRCD-中文昵称"><span class="nav-number">1.</span> <span class="nav-text">IRCD 中文昵称</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Anope-配置-IRCD-链接"><span class="nav-number">2.</span> <span class="nav-text">Anope 配置 IRCD 链接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何产生链接"><span class="nav-number">2.1.</span> <span class="nav-text">如何产生链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Anope-的配置"><span class="nav-number">2.2.</span> <span class="nav-text">Anope 的配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Anope-NickName-Server-Chars-设置"><span class="nav-number">3.</span> <span class="nav-text">Anope NickName Server Chars 设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Anope-NS-注册中文名"><span class="nav-number">4.</span> <span class="nav-text">Anope NS 注册中文名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Anope-插件使用"><span class="nav-number">4.1.</span> <span class="nav-text">Anope 插件使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决中文名注册"><span class="nav-number">4.2.</span> <span class="nav-text">解决中文名注册</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">5.</span> <span class="nav-text">结语</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="Millyn">
+  <p class="site-author-name" itemprop="name">Millyn</p>
+  <div class="site-description" itemprop="description">Product / Code / PHP / Python / Docker</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">tags</span>
+        
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Millyn</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=66480545";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.4.2.js"></script>
+
+<script src="/js/motion.js?v=7.4.2.js"></script>
+
+
+<script src="/js/schemes/pisces.js?v=7.4.2.js"></script>
+
+
+<script src="/js/next-boot.js?v=7.4.2.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://dont-door.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  function disqus_config() {
+    this.page.url = "https://y85.pw/2018/09/04/unrealirc-to-anope/";
+    this.page.identifier = "2018/09/04/unrealirc-to-anope/";
+    this.page.title = 'Unrealircd 和 Anope 配置记录';
+  }
+  function loadComments() {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://dont-door.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  }
+    (function() {
+      var offsetTop = document.getElementById('comments').offsetTop - window.innerHeight;
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        window.addEventListener('load', loadComments, false);
+      } else {
+        var disqus_scroll = () => {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = document.getElementById('comments').offsetTop - window.innerHeight;
+          var scrollTop = window.scrollY;
+
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            window.removeEventListener('scroll', disqus_scroll);
+            loadComments();
+          }
+        };
+        window.addEventListener('scroll', disqus_scroll);
+      }
+    })();
+  
+</script>
+
+</body>
+</html>
